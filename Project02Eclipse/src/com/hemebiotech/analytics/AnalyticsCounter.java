@@ -1,41 +1,64 @@
 package com.hemebiotech.analytics;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.util.*;
 
 public class AnalyticsCounter {
-	private static int headacheCount = 0;	// initialize to 0
-	private static int rashCount = 0;		// initialize to 0
-	private static int pupilCount = 0;		// initialize to 0
-	
-	public static void main(String args[]) throws Exception {
-		// first get input
-		BufferedReader reader = new BufferedReader (new FileReader(System.getProperty("user.dir") + "/Project02Eclipse/symptoms.txt"));
-		String line = reader.readLine();
+	private ISymptomReader reader;
+	private ISymptomWriter writer;
 
-		int headCount = 0;
-		while (line != null) {
-			System.out.println("symptom from file: " + line);
-			if (line.equals("headache")) {
-				headCount++;
-				System.out.println("number of headaches: " + headCount);
-			}
-			else if (line.equals("rush")) {
-				rashCount++;
-			}
-			else if (line.contains("pupils")) {
-				pupilCount++;
-			}
+	public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer) {
+		this.reader = reader;
+		this.writer = writer;
+	}
 
-			line = reader.readLine();	// get another symptom
+	public List<String> getSymptoms() {
+		return reader.GetSymptoms();
+	}
+
+	public Map<String, Integer> countSymptoms(List<String> symptoms) {
+		Map<String, Integer> symptomCounts = new HashMap<>();
+
+		for (String symptom : symptoms) {
+			if (!symptomCounts.containsKey(symptom)) {
+				symptomCounts.put(symptom, 1);
+			}
+			else {
+				symptomCounts.put(symptom, symptomCounts.get(symptom) + 1);
+			}
 		}
-		
-		// next generate output
-		FileWriter writer = new FileWriter ("result.out");
-		writer.write("headache: " + headacheCount + "\n");
-		writer.write("rash: " + rashCount + "\n");
-		writer.write("dialated pupils: " + pupilCount + "\n");
-		writer.close();
+
+		return symptomCounts;
+	}
+
+	public Map<String, Integer> sortSymptoms(Map<String, Integer> symptoms) {
+		// sort symptoms by alphabetical order
+
+		// Convertissez la map en une liste d'entrées (paires clé-valeur)
+		List<Map.Entry<String, Integer>> list = new ArrayList<>(symptoms.entrySet());
+
+		// Triez la liste en fonction des clés (ordre alphabétique)
+		list.sort(Map.Entry.comparingByKey());
+
+
+		// Créez une nouvelle Map triée
+		Map<String, Integer> sortedMap = new LinkedHashMap<>();
+		for (Map.Entry<String, Integer> entry : list) {
+			sortedMap.put(entry.getKey(), entry.getValue());
+		}
+
+		return sortedMap;
+	}
+
+	public void writeSymptoms(Map<String, Integer> symptoms) throws Exception {
+		writer.writeSymptoms(symptoms);
+	}
+
+	public static void main(String args[]) throws Exception {
+
+		AnalyticsCounter analyticsCounter = new AnalyticsCounter(new ReadSymptomDataFromFile((System.getProperty("user.dir") + "/Project02Eclipse/symptoms.txt")), new WriteSymptomDataToFile());
+		List<String> symptoms = analyticsCounter.getSymptoms();
+		Map<String, Integer> symptomCounts = analyticsCounter.countSymptoms(symptoms);
+		Map<String, Integer> sortedSymptoms = analyticsCounter.sortSymptoms(symptomCounts);
+		analyticsCounter.writeSymptoms(sortedSymptoms);
 	}
 }
