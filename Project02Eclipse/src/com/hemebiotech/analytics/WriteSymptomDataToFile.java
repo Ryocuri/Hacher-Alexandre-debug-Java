@@ -5,6 +5,12 @@ import java.io.IOException;
 import java.util.Map;
 
 public class WriteSymptomDataToFile implements ISymptomWriter {
+
+	/**
+	 *
+	 * @param symptoms
+	 * @throws IOException
+	 */
 	@Override
 	public void writeSymptoms(Map<String, Integer> symptoms) throws IOException {
 

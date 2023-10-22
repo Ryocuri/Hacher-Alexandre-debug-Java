@@ -5,5 +5,10 @@ import java.util.Map;
 
 public interface ISymptomWriter {
 
+	/**
+	 *
+	 * @param symptoms
+	 * @throws IOException
+	 */
 	public void writeSymptoms(Map<String, Integer> symptoms) throws IOException;
 }

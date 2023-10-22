@@ -6,15 +6,29 @@ public class AnalyticsCounter {
 	private ISymptomReader reader;
 	private ISymptomWriter writer;
 
+	/**
+	 * Constructor
+	 * @param reader
+	 * @param writer
+	 */
 	public AnalyticsCounter(ISymptomReader reader, ISymptomWriter writer) {
 		this.reader = reader;
 		this.writer = writer;
 	}
 
+	/**
+	 * Get symptoms from file
+	 * @return symptoms
+	 */
 	public List<String> getSymptoms() {
 		return reader.GetSymptoms();
 	}
 
+	/**
+	 * Count symptoms
+	 * @param symptoms
+	 * @return symptoms with their count
+	 */
 	public Map<String, Integer> countSymptoms(List<String> symptoms) {
 		Map<String, Integer> symptomCounts = new HashMap<>();
 
@@ -30,6 +44,11 @@ public class AnalyticsCounter {
 		return symptomCounts;
 	}
 
+	/**
+	 * Sort symptoms by alphabetical order
+	 * @param symptoms
+	 * @return sorted symptoms
+	 */
 	public Map<String, Integer> sortSymptoms(Map<String, Integer> symptoms) {
 		// sort symptoms by alphabetical order
 
@@ -49,10 +68,20 @@ public class AnalyticsCounter {
 		return sortedMap;
 	}
 
+	/**
+	 * Write symptoms in a file
+	 * @param symptoms
+	 * @throws Exception
+	 */
 	public void writeSymptoms(Map<String, Integer> symptoms) throws Exception {
 		writer.writeSymptoms(symptoms);
 	}
 
+	/**
+	 * Main
+	 * @param args
+	 * @throws Exception
+	 */
 	public static void main(String args[]) throws Exception {
 
 		AnalyticsCounter analyticsCounter = new AnalyticsCounter(new ReadSymptomDataFromFile((System.getProperty("user.dir") + "/Project02Eclipse/symptoms.txt")), new WriteSymptomDataToFile());
